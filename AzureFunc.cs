@@ -1,4 +1,5 @@
 using System;
+using System.Data.SqlTypes;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,16 @@ namespace ChyaAzureFunc
              queueMsg = $"Got blob file {filename} with size: " + blobStream.Length;
           }
 
+       }
+
+       [FunctionName("TimerTriggerToQueue")]
+       public static void TimerTriggerQueueInsert(
+          [TimerTrigger("0 0 10 * * *", RunOnStartup = true, UseMonitor = true)] TimerInfo timer,
+          [Queue("azurefuncmsg")] out string msg, 
+          ILogger log)
+       {
+          log.LogInformation("TimerTriggerQueueInsert triggered"); 
+          msg = "TimerTriggerQueueInsert triggered at " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ", next trigger is at: " + timer.FormatNextOccurrences(1);
        }
    }
 }
