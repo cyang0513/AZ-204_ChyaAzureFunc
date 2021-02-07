@@ -1,6 +1,7 @@
 using System;
 using System.Data.SqlTypes;
 using System.IO;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -21,7 +22,10 @@ namespace ChyaAzureFunc
        {
           log.LogInformation("C# HTTP trigger function processed a request.");
 
-          string msg = req.Query["msg"];
+          ClaimsPrincipal identities = req.HttpContext.User;
+          string username = identities.Identity?.Name;
+
+         string msg = req.Query["msg"];
 
           string requestBody = new StreamReader(req.Body).ReadToEndAsync().Result;
           dynamic data = JsonConvert.DeserializeObject(requestBody);
@@ -29,14 +33,33 @@ namespace ChyaAzureFunc
 
           string responseMessage = string.IsNullOrEmpty(msg)
              ? "Pass a message with parameter msg to save to queue"
-             : $"Hello, Your message {msg} has been saved.";
+             : $"Hello {username}, Your message {msg} has been saved.";
 
           log.LogInformation("C# HTTP trigger function to save message: " + msg);
           queueMsg = msg;
           return new OkObjectResult(responseMessage);
        }
 
-       [FunctionName("BlobTriggerFileNameToQueue")]
+       [FunctionName("HttpMsgToQueueRouted")]
+       public static IActionResult HttpMsgToQueueRouted(
+          [HttpTrigger(AuthorizationLevel.Function, "get", Route = "message/{msg}")] HttpRequest req,
+          string msg,
+          [Queue("azurefuncmsg")] out string queueMsg,
+          ILogger log)
+       {
+          log.LogInformation("C# HTTP trigger function processed a request.");
+
+          ClaimsPrincipal identities = req.HttpContext.User;
+          string username = identities.Identity?.Name;
+
+          string responseMessage = $"Hello {username}, Your message {msg} has been saved.";
+
+          log.LogInformation("C# HTTP trigger function to save message: " + msg);
+          queueMsg = msg;
+          return new OkObjectResult(responseMessage);
+       }
+
+      [FunctionName("BlobTriggerFileNameToQueue")]
        public static void BlobTriggerFileNameToQueue(
           [BlobTrigger("blobtrigger/{filename}")] Stream blobStream, string filename, //file name binding expression
           [Queue("azurefuncmsg")] out string queueMsg,
