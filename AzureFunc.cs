@@ -40,9 +40,9 @@ namespace ChyaAzureFunc
           return new OkObjectResult(responseMessage);
        }
 
-       [FunctionName("HttpMsgToQueueRouted")]
-       public static IActionResult HttpMsgToQueueRouted(
-          [HttpTrigger(AuthorizationLevel.Function, "get", Route = "message/{msg}")] HttpRequest req,
+       [FunctionName("HttpMsgToQueueMsgRouted")]
+       public static IActionResult HttpMsgToQueueMsgRouted(
+          [HttpTrigger(AuthorizationLevel.Function, "get", Route = "message/{msg:alpha}")] HttpRequest req,
           string msg,
           [Queue("azurefuncmsg")] out string queueMsg,
           ILogger log)
@@ -53,6 +53,25 @@ namespace ChyaAzureFunc
           string username = identities.Identity?.Name;
 
           string responseMessage = $"Hello {username}, Your message {msg} has been saved.";
+
+          log.LogInformation("C# HTTP trigger function to save message: " + msg);
+          queueMsg = msg;
+          return new OkObjectResult(responseMessage);
+       }
+
+       [FunctionName("HttpMsgToQueueNumberRouted")]
+       public static IActionResult HttpMsgToQueueNumberRouted(
+          [HttpTrigger(AuthorizationLevel.Function, "get", Route = "message/{msg:double}")] HttpRequest req,
+          string msg,
+          [Queue("azurefuncmsg")] out string queueMsg,
+          ILogger log)
+       {
+          log.LogInformation("C# HTTP trigger function processed a request.");
+
+          ClaimsPrincipal identities = req.HttpContext.User;
+          string username = identities.Identity?.Name;
+
+          string responseMessage = $"Hello {username}, Your message number {msg} has been saved.";
 
           log.LogInformation("C# HTTP trigger function to save message: " + msg);
           queueMsg = msg;
