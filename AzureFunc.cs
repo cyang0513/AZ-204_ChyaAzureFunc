@@ -60,7 +60,7 @@ namespace ChyaAzureFunc
        }
 
        [FunctionName("HttpMsgToQueueNumberRouted")]
-       public static IActionResult HttpMsgToQueueNumberRouted(
+       public static ObjectResult HttpMsgToQueueNumberRouted(
           [HttpTrigger(AuthorizationLevel.Function, "get", Route = "message/{msg:double}")] HttpRequest req,
           string msg,
           [Queue("azurefuncmsg")] out string queueMsg,
