@@ -51,7 +51,7 @@ namespace ChyaAzureFunc
       [FunctionName("ActivityCallFirst")]
       public string ActivityCallFirst(
          [ActivityTrigger] IDurableActivityContext activityContext,
-         [Blob("blobtrigger/dural.dat", FileAccess.Write)] Stream blobFile, 
+         [Blob("blobtrigger/{InstanceId}", FileAccess.Write)] Stream blobFile, //InstanceId is a property of activityContext
          ILogger log
          )
       {
