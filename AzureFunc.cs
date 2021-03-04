@@ -108,7 +108,7 @@ namespace ChyaAzureFunc
       [FunctionName("TimerTriggerToQueue")]
       public static void TimerTriggerQueueInsert(
          [TimerTrigger("0 0 10 * * *", RunOnStartup = true, UseMonitor = true)] TimerInfo timer,
-         [Queue("azurefuncmsg")] out string msg,
+         [Queue("timertrigger")] out string msg,
          ILogger log)
       {
          log.LogInformation("TimerTriggerQueueInsert triggered");
