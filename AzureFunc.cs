@@ -2,11 +2,14 @@ using System;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.EventGrid.Models;
+using Microsoft.Azure.WebJobs.Extensions.EventGrid;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -103,5 +106,17 @@ namespace ChyaAzureFunc
           log.LogInformation("TimerTriggerQueueInsert triggered"); 
           msg = "TimerTriggerQueueInsert triggered at " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ", next trigger is at: " + timer.FormatNextOccurrences(1);
        }
-   }
+
+       [FunctionName("EventGridHandler")]
+       public static void EventGridTriggerToQueue([EventGridTrigger()] EventGridEvent ev,
+                                                  [Queue("azurefuncmsg")] out string queueMsg)
+       {
+          var sb = new StringBuilder();
+          sb.Append($"Event grid event: {ev.Subject} - {ev.Topic}, data: {ev.Data.ToString()}");
+          sb.Append(ev.Subject);
+          sb.Append(ev.Topic);
+          sb.Append(ev.EventType);
+          queueMsg = sb.ToString();
+       }
+    }
 }
