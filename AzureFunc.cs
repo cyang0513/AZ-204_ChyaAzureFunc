@@ -122,12 +122,7 @@ namespace ChyaAzureFunc
        public static void EventGridTriggerToQueue([EventGridTrigger()] EventGridEvent ev,
                                                   [Queue("azurefuncmsg")] out string queueMsg)
        {
-          var sb = new StringBuilder();
-          sb.Append($"Event grid event: {ev.Subject} - {ev.Topic}, data: {ev.Data.ToString()}");
-          sb.Append(ev.Subject);
-          sb.Append(ev.Topic);
-          sb.Append(ev.EventType);
-          queueMsg = sb.ToString();
+          queueMsg = $"Event grid event: {ev.Subject} - {ev.Topic}, data: {ev.Data.ToString()}, type: {ev.EventType}";
        }
     }
 }
