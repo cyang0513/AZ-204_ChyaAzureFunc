@@ -19,7 +19,7 @@ namespace ChyaAzureFunc
       //Client
       [FunctionName("AzureDurableFunc")]
       public IActionResult ChyaDurableFuncTest(
-         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Durable/{msg}")] HttpRequest req,
+         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Durable/{msg}")] HttpRequest req, //Route WebHook endpoint
          string msg,
          [DurableClient] IDurableClient orchest,
          ILogger log
