@@ -12,10 +12,10 @@ using Newtonsoft.Json;
 
 namespace ChyaAzureFunc
 {
-   public static class AzureFunc
+   public class AzureFunc
    {
       [FunctionName("HttpMsgToQueue")]
-      public static IActionResult HttpMsgToQueue(
+      public IActionResult HttpMsgToQueue(
          [HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req,
          [Queue("azurefuncmsg")] out string queueMsg,
          ILogger log)
@@ -41,7 +41,7 @@ namespace ChyaAzureFunc
       }
 
       [FunctionName("AzureMonitorMsgToQueue")]
-      public static string AzureMonitorMsgToQueue(
+      public string AzureMonitorMsgToQueue(
          [HttpTrigger(AuthorizationLevel.Function)] HttpRequest req,
          [Queue("azureappmonitor")] out string msg,
          ILogger logger
@@ -52,7 +52,7 @@ namespace ChyaAzureFunc
       }
 
       [FunctionName("HttpMsgToQueueMsgRouted")]
-      public static IActionResult HttpMsgToQueueMsgRouted(
+      public IActionResult HttpMsgToQueueMsgRouted(
          [HttpTrigger(AuthorizationLevel.Function, "get", Route = "message/{msg:alpha}")] HttpRequest req,
          string msg,
          [Queue("azurefuncmsg")] out string queueMsg,
@@ -71,7 +71,7 @@ namespace ChyaAzureFunc
       }
 
       [FunctionName("HttpMsgToQueueNumberRouted")]
-      public static ObjectResult HttpMsgToQueueNumberRouted(
+      public ObjectResult HttpMsgToQueueNumberRouted(
          [HttpTrigger(AuthorizationLevel.Function, "get", Route = "message/{msg:double}")] HttpRequest req,
          string msg,
          [Queue("azurefuncmsg")] out string queueMsg,
@@ -90,7 +90,7 @@ namespace ChyaAzureFunc
       }
 
       [FunctionName("BlobTriggerFileNameToQueue")]
-      public static void BlobTriggerFileNameToQueue(
+      public void BlobTriggerFileNameToQueue(
           [BlobTrigger("blobtrigger/{filename}")] Stream blobStream, string filename, //file name binding expression
           [Queue("azurefuncmsg")] out string queueMsg,
           ILogger log)
@@ -106,7 +106,7 @@ namespace ChyaAzureFunc
       }
 
       [FunctionName("TimerTriggerToQueue")]
-      public static void TimerTriggerQueueInsert(
+      public void TimerTriggerQueueInsert(
          [TimerTrigger("0 0 10 * * *", RunOnStartup = false, UseMonitor = true)] TimerInfo timer,
          [Queue("timertrigger")] out string msg,
          ILogger log)
