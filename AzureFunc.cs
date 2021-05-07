@@ -109,7 +109,7 @@ namespace ChyaAzureFunc
       }
 
        [FunctionName("TimerTriggerToQueue")]
-       public static void TimerTriggerQueueInsert(
+       public void TimerTriggerQueueInsert(
           [TimerTrigger("0 0 10 * * *", RunOnStartup = false, UseMonitor = true)] TimerInfo timer,
           [Queue("timertrigger")] out string msg, 
           ILogger log)
@@ -119,7 +119,7 @@ namespace ChyaAzureFunc
        }
 
        [FunctionName("EventGridHandler")]
-       public static void EventGridTriggerToQueue([EventGridTrigger()] EventGridEvent ev,
+       public void EventGridTriggerToQueue([EventGridTrigger()] EventGridEvent ev,
                                                   [Queue("azurefuncmsg")] out string queueMsg)
        {
           queueMsg = $"Event grid event: {ev.Subject} - {ev.Topic}, data: {ev.Data.ToString()}, type: {ev.EventType}";
